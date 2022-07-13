@@ -1,5 +1,5 @@
 import useStore from '@/store'
-import { saveConfigMsg, updateConfig } from '../api'
+import { getConfig, saveConfigMsg, updateConfig } from '../api'
 import { Notification } from 'element-ui'
 const formData = {
   APPID: '',
@@ -46,6 +46,16 @@ const updateConfigMsg = async function (title, data) {
     message: title + '已上传至服务器'
   })
 }
+// 检查是否存在配置信息
+
+const getConfigMsg = function (APPID) {
+  return getConfig({
+    params: {
+      APPID
+    }
+  })
+}
+
 export {
-  saveMsg, updateConfigMsg
+  saveMsg, updateConfigMsg, getConfigMsg
 }

@@ -3,14 +3,17 @@
  * @Date: 2022-06-24 17:04:27
  * @LastEditors: harry
  * @Github: https://github.com/rr210
- * @LastEditTime: 2022-07-13 19:48:58
+ * @LastEditTime: 2022-07-13 22:55:07
  * @FilePath: \mongodb\src\views\formview\FormView.vue
 -->
 <template>
   <div class="form-w">
     <el-form ref="formRef" :model="form" :rules="rules">
-      <el-form-item label="application_key_id" prop="application_key_id">
+      <el-form-item class="form-key-w" label="application_key_id" prop="application_key_id">
         <el-input v-model="form.application_key_id" placeholder="请填写应用程序密钥id"></el-input>
+        <el-tooltip class="item" effect="dark" :content="'点击查看数据库中是否存在您的配置信息'" placement="top-start">
+          <el-button @click="handleIsExitConfig">检索</el-button>
+        </el-tooltip>
       </el-form-item>
       <el-form-item v-if="form.application_key_id" prop="isdatabase" label="是否开启数据库存储配置">
         <el-switch v-model="form.isdatabase" @change="handleDatabaseBtn"></el-switch>
@@ -33,12 +36,13 @@
   </div>
 </template>
 <script>
-import { Notification } from 'element-ui'
+import { MessageBox, Notification } from 'element-ui'
 import { mapActions, mapState } from 'pinia'
 import { debounce } from '@/plugin/filter'
 import useStore from '@/store'
 import { authIsexit } from '@/utils/common/login'
-import { saveMsg } from '@/utils/common/mongodb'
+import { saveMsg, getConfigMsg } from '@/utils/common/mongodb'
+
 // import { saveConfigMsg } from '@/utils/api'
 export default {
   data() {
@@ -85,6 +89,7 @@ export default {
   methods: {
     ...mapActions(useStore, ['setdatabase']),
     ...mapActions(useStore, ['handleIsLogined']),
+    ...mapActions(useStore, ['setPiniaStr']),
     // 检验表单
     validateURL: (rule, value, callback) => {
       const reg = value.charAt(value.length - 1) === '/'
@@ -94,6 +99,36 @@ export default {
         callback()
       }
     },
+    handleIsExitConfig: debounce(async function () {
+      const id = this.form.application_key_id
+      const _this = this
+      if (id && id.trim().length !== 0) {
+        const { data: res } = await getConfigMsg(id.trim())
+        console.log(res)
+        if (res.status_code === 1) {
+          MessageBox({
+            title: '提示',
+            message: res.msg,
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            showCancelButton: true,
+            type: 'warning'
+          }).then(() => {
+            _this.form.bucket_name = res.data.BUCKETNAME
+            _this.form.host_url = res.data.HOST_URL
+            _this.form.isdatabase = true
+            _this.setdatabase(true)
+            _this.setPiniaStr(res.data)
+          })
+        } else {
+          Notification({
+            title: '提示',
+            message: res.msg,
+            type: 'error'
+          })
+        }
+      }
+    }, 400, true),
     handleDatabaseBtn(e) {
       console.log(e)
       this.setdatabase(e)

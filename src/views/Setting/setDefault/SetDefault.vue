@@ -3,8 +3,8 @@
  * @Date: 2022-07-04 20:19:12
  * @LastEditors: harry
  * @Github: https://github.com/rr210
- * @LastEditTime: 2022-07-09 18:50:42
- * @FilePath: \master\src\views\Setting\setDefault\SetDefault.vue
+ * @LastEditTime: 2022-07-13 23:22:49
+ * @FilePath: \mongodb\src\views\Setting\setDefault\SetDefault.vue
 -->
 <template>
   <div class="set-defalut">
@@ -55,6 +55,19 @@ export default {
   },
   computed: {
     ...mapState(useStore, ['defaultFile'])
+  },
+  watch: {
+    defaultFile: {
+      deep: true,
+      handler(val) {
+        this.radio = val.methods
+        if (val.methods === '1') {
+          this.valuePrint = val.valPt
+        } else {
+          this.valueAuto = val.valAt
+        }
+      }
+    }
   },
   mounted() {
     this.radio = this.defaultFile.methods

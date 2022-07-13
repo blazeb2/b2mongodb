@@ -3,7 +3,7 @@
  * @Date: 2022-07-01 09:21:31
  * @LastEditors: harry
  * @Github: https://github.com/rr210
- * @LastEditTime: 2022-07-13 19:30:19
+ * @LastEditTime: 2022-07-13 21:28:38
  * @FilePath: \mongodb\src\utils\api\index.js
  */
 import axios from '../http'
@@ -13,6 +13,10 @@ const UPLOAD_URL = '/upload'
 const LIST_URL = '/list'
 const IMG_ITEM_URL = '/img'
 const DATA_BASE_URL = '/data'
+// 检查是否存在数据值
+const getConfig = function(params) {
+  return axios.get(DATA_BASE_URL, params)
+}
 // 操作MONGODB
 const saveConfigMsg = function (data) {
   return axios.post(DATA_BASE_URL, data)
@@ -156,5 +160,6 @@ const dkFn = function (data, id, parentId, children) {
 // saveFileOptions
 // }
 export {
-  auth, uploadServer, picList, deleteitemImg, dataTitleGet, dkFn, saveConfigMsg, updateConfig
+  auth, uploadServer, picList, deleteitemImg, dataTitleGet, dkFn, saveConfigMsg, updateConfig,
+  getConfig
 }

@@ -3,12 +3,13 @@
  * @Date: 2022-07-01 12:52:23
  * @LastEditors: harry
  * @Github: https://github.com/rr210
- * @LastEditTime: 2022-07-13 20:48:51
+ * @LastEditTime: 2022-07-13 22:57:18
  * @FilePath: \mongodb\src\store\index.js
  */
 import { defineStore } from 'pinia'
 import { authIsexit } from '../utils/common/login'
 import { updateConfigMsg } from '../utils/common/mongodb'
+import { Notification } from 'element-ui'
 const useStore = defineStore('store', {
   // 开启数据缓存
   persist: {
@@ -143,6 +144,30 @@ const useStore = defineStore('store', {
       if (this.isdatabase) {
         updateConfigMsg('自定义链接格式配置', { DEFAULT_COPY_URL: e })
       }
+    },
+    /**
+     * 将从数据库中请求的数据存到pinia中
+     */
+    setPiniaStr(e) {
+      // BUCKETNAME
+      const { COMPRESS_VALUE, DEFAULT_COPY_URL, DEFAULT_FILE_WAY, DEFAULT_UPLOAD_WAY, FORMSTR_DEFAULT, IS_OPEN_COMPRESS, PREFIX_IMAGE, SEARCH_METHODS } = e
+      this.commpressParams.rank = COMPRESS_VALUE
+      this.defaultcopyformat.formatList.Custom = DEFAULT_COPY_URL
+      this.setdefaultFile.methods = SEARCH_METHODS
+      if (SEARCH_METHODS === '1') {
+        this.setdefaultFile.valPt = DEFAULT_FILE_WAY
+      } else {
+        this.setdefaultFile.valAt = DEFAULT_FILE_WAY.split('/').slice(0, -1)
+      }
+      this.toFile = DEFAULT_UPLOAD_WAY
+      this.defaultcopyformat.formatStr = FORMSTR_DEFAULT
+      this.commpressParams.iscompress = IS_OPEN_COMPRESS
+      this.prefixImg.defaultUrl = PREFIX_IMAGE
+      Notification({
+        type: 'success',
+        message: '请填写密钥，然后点击下方保存',
+        title: '数据库提示'
+      })
     }
   }
 })

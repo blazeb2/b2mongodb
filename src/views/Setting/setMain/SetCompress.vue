@@ -3,7 +3,7 @@
  * @Date: 2022-07-05 11:54:55
  * @LastEditors: harry
  * @Github: https://github.com/rr210
- * @LastEditTime: 2022-07-13 20:40:12
+ * @LastEditTime: 2022-07-13 23:36:58
  * @FilePath: \mongodb\src\views\Setting\setMain\SetCompress.vue
 -->
 <template>
@@ -15,7 +15,7 @@
     <div class="block-compress" v-show="value">
       <span class="demonstration">压缩等级({{ value1 }})</span>
       <div class="slide-w">
-        <el-slider @change="handleComp" show-input v-model="value1" :step="0.1" :max="1" show-stops>
+        <el-slider @change="handleComp" show-input v-model="value1" :step="0.1" :max="1" show-steps>
         </el-slider>
       </div>
     </div>
